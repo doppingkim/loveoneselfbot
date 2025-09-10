@@ -22,8 +22,7 @@ class Config:
     @classmethod
     def validate(cls):
         """필수 환경 변수 검증"""
-        if not cls.TELEGRAM_BOT_TOKEN:
+        if not cls.TELEGRAM_BOT_TOKEN or cls.TELEGRAM_BOT_TOKEN == "your_telegram_bot_token_here":
             raise ValueError("TELEGRAM_BOT_TOKEN이 설정되지 않았습니다.")
-        if not cls.OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY가 설정되지 않았습니다.")
+        # OPENAI_API_KEY는 선택사항으로 변경 (기본 메시지 사용 가능)
         return True

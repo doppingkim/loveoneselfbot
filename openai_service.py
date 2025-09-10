@@ -7,8 +7,12 @@ class OpenAIService:
     
     def __init__(self):
         """OpenAI 클라이언트 초기화"""
-        openai.api_key = Config.OPENAI_API_KEY
-        self.client = openai.OpenAI(api_key=Config.OPENAI_API_KEY)
+        if Config.OPENAI_API_KEY and Config.OPENAI_API_KEY != "your_openai_api_key_here":
+            openai.api_key = Config.OPENAI_API_KEY
+            self.client = openai.OpenAI(api_key=Config.OPENAI_API_KEY)
+        else:
+            self.client = None
+            print("⚠️ OPENAI_API_KEY가 설정되지 않았습니다. 기본 메시지만 사용됩니다.")
     
     def generate_positive_message(self) -> str:
         """15줄의 자기확언 리스트 생성"""
@@ -41,6 +45,10 @@ class OpenAIService:
         반드시 15줄로 구성된 자기확언 리스트만 작성해주세요.
         """
         
+        if not self.client:
+            # OpenAI 클라이언트가 없으면 기본 메시지 반환
+            return self._get_fallback_message()
+            
         try:
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -57,7 +65,11 @@ class OpenAIService:
             
         except Exception as e:
             # API 호출 실패 시 기본 메시지 반환
-            fallback_message = """1. 나는 내 감정을 있는 그대로 받아들일 권리가 있다
+            return self._get_fallback_message()
+    
+    def _get_fallback_message(self) -> str:
+        """기본 자기확언 메시지 반환"""
+        return """1. 나는 내 감정을 있는 그대로 받아들일 권리가 있다
 2. 완벽하지 않아도 충분히 가치 있는 존재다
 3. 내 실수는 나를 성장시키는 소중한 경험이다
 4. 다른 사람의 기대보다 내 마음의 소리가 더 중요하다
@@ -72,7 +84,6 @@ class OpenAIService:
 13. 나는 내 몸과 마음을 소중히 여길 가치가 있다
 14. 내 꿈과 목표는 충분히 의미 있고 가치 있다
 15. 나는 매일 조금씩 더 나은 사람이 되어가고 있다"""
-            return fallback_message
     
     def generate_daily_affirmation(self) -> str:
         """일일 자기 확언 메시지 생성 (15줄 리스트)"""
