@@ -33,7 +33,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 **API 키 예시:**
 ```
-sk-1234567890abcdefghijklmnopqrstuvwxyz
+sk-proj-1234567890abcdefghijklmnopqrstuvwxyz
 ```
 
 ## 🔧 선택적 환경 변수
