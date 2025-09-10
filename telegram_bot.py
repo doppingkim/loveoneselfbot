@@ -138,6 +138,9 @@ class MindfulBot:
     async def start_bot(self):
         """봇 시작"""
         try:
+            # 환경 변수 디버깅
+            Config.debug_env_vars()
+            
             # 환경 변수 검증
             Config.validate()
             
