@@ -17,7 +17,7 @@ class Config:
     GROUP_CHAT_ID = os.getenv('GROUP_CHAT_ID') or os.getenv('GROUP_CHAT_ID')
     
     # 메시지 전송 간격 (분 단위)
-    MESSAGE_INTERVAL = int(os.getenv('MESSAGE_INTERVAL', 30))
+    MESSAGE_INTERVAL = int(os.getenv('MESSAGE_INTERVAL', 60))
     
     @classmethod
     def debug_env_vars(cls):

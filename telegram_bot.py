@@ -34,7 +34,7 @@ class MindfulBot:
         /start - 봇 시작
         /help - 도움말 보기
         
-        서버 시작 후 30분마다 자동으로 자기확언이 전송됩니다! ✨
+        서버 시작 후 1시간마다 자동으로 자기확언이 전송됩니다! ✨
         """
         await update.message.reply_text(welcome_message)
         
@@ -57,13 +57,13 @@ class MindfulBot:
         /help - 이 도움말 보기
         
         ⏰ 자동 메시지:
-        서버 시작 후 30분마다 자동으로 자기확언이 전송됩니다.
+        서버 시작 후 1시간마다 자동으로 자기확언이 전송됩니다.
         
         💡 특징:
         - 심리학적 근거가 있는 깊이 있는 자기확언
         - 현대인의 실제 고민을 다룬 공감대 형성
         - 상투적이지 않은 진정성 있는 메시지
-        - 15줄의 체계적인 자기확언 리스트
+        - 10줄의 체계적인 자기확언 리스트
         
         🌟 팁:
         이 봇을 그룹 채팅에 추가하면 모든 멤버가 함께 마음챙김을 실천할 수 있어요!
@@ -116,7 +116,6 @@ class MindfulBot:
     
     def setup_scheduler(self):
         """스케줄러 설정"""
-        # 서버 실행 후 30분마다 메시지 전송
         schedule.every(Config.MESSAGE_INTERVAL).minutes.do(
             lambda: asyncio.create_task(self.send_scheduled_message(None))
         )
