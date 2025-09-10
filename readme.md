@@ -54,8 +54,6 @@ python weird.py
 
 ### 개인 채팅 명령어
 - `/start` - 봇 시작
-- `/message` - 긍정적인 메시지 받기
-- `/affirmation` - 자기 확언 받기
 - `/help` - 도움말 보기
 
 ### 그룹 채팅
