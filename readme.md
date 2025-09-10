@@ -6,7 +6,7 @@
 
 ## ✨ 주요 기능
 
-- **자동 메시지 전송**: 매시 30분마다 설정된 그룹 채팅방에 자동으로 메시지를 전송합니다.
+- **자동 메시지 전송**: 매 1시간마다 설정된 그룹 채팅방에 자동으로 메시지를 전송합니다.
 - **AI 기반 메시지 생성**: OpenAI의 GPT-4o-mini 모델을 이용해 독창적이고 긍정적인 메시지를 생성합니다.
 - **1:N 그룹 서비스**: 1:1 채팅뿐만 아니라 그룹 채팅방에서도 사용할 수 있어 여러 사람과 함께 긍정적인 에너지를 나눌 수 있습니다.
 - **다양한 메시지 유형**: 자기 확언, 명언, 격려의 말 등 다양한 형태의 긍정적인 메시지를 제공합니다.
@@ -42,7 +42,7 @@ pip install -r requirements.txt
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 OPENAI_API_KEY=your_openai_api_key_here
 GROUP_CHAT_ID=your_group_chat_id_here
-MESSAGE_INTERVAL=30
+MESSAGE_INTERVAL=60
 ```
 
 ### 4. 봇 실행
@@ -61,7 +61,7 @@ python weird.py
 ### 그룹 채팅
 1. 봇을 그룹에 추가
 2. 환경 변수에 `GROUP_CHAT_ID` 설정
-3. 매시 30분마다 자동으로 메시지 전송
+3. 매 1시간마다 자동으로 메시지 전송
 
 ## 🚀 Railway 배포
 
