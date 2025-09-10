@@ -39,6 +39,15 @@ class MindfulBot:
         서버 시작 후 30분마다 자동으로 자기확언이 전송됩니다! ✨
         """
         await update.message.reply_text(welcome_message)
+        
+        # 환영 메시지 후 바로 자기확언 전송
+        try:
+            await update.message.reply_text("💭 당신을 위한 특별한 자기확언을 준비하고 있어요...")
+            message = self.openai_service.generate_positive_message()
+            await update.message.reply_text(f"🌟 **첫 만남을 위한 자기확언**\n\n{message}")
+        except Exception as e:
+            logger.error(f"시작 메시지 생성 중 오류 발생: {e}")
+            await update.message.reply_text("💖 오늘도 당신은 충분히 훌륭한 사람입니다!")
     
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """도움말 명령어 처리"""
