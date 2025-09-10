@@ -80,17 +80,25 @@ class MindfulBot:
             logger.error(f"비밀 메시지 생성 중 오류 발생: {e}")
             await update.message.reply_text("💖 오늘도 당신은 충분히 훌륭한 사람입니다!")
     
-    async def send_scheduled_message(self, context: ContextTypes.DEFAULT_TYPE):
+    async def send_scheduled_message(self, context: ContextTypes.DEFAULT_TYPE = None):
         """스케줄된 메시지 전송"""
         try:
             message = self.openai_service.generate_positive_message()
             
             # 그룹 채팅 ID가 설정되어 있으면 그룹에 전송
             if Config.GROUP_CHAT_ID:
-                await context.bot.send_message(
-                    chat_id=Config.GROUP_CHAT_ID,
-                    text=f"💖 **마음챙김 시간**\n\n{message}"
-                )
+                if context and hasattr(context, 'bot'):
+                    await context.bot.send_message(
+                        chat_id=Config.GROUP_CHAT_ID,
+                        text=f"💖 **마음챙김 시간**\n\n{message}"
+                    )
+                else:
+                    # context가 없으면 application의 bot 사용
+                    if self.application and self.application.bot:
+                        await self.application.bot.send_message(
+                            chat_id=Config.GROUP_CHAT_ID,
+                            text=f"💖 **마음챙김 시간**\n\n{message}"
+                        )
                 logger.info(f"그룹 채팅에 스케줄 메시지 전송: {Config.GROUP_CHAT_ID}")
             else:
                 logger.info("GROUP_CHAT_ID가 설정되지 않아 스케줄 메시지를 전송하지 않습니다.")
