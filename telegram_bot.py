@@ -28,15 +28,15 @@ class MindfulBot:
         welcome_message = """
         💖 마음챙김 챗봇에 오신 것을 환영합니다!
         
-        이 봇은 매일매일 당신에게 긍정적인 메시지를 전달해드립니다.
+        이 봇은 당신의 내면을 어루만지는 깊이 있는 자기확언을 전달해드립니다.
         
         사용 가능한 명령어:
         /start - 봇 시작
-        /message - 지금 바로 긍정적인 메시지 받기
-        /affirmation - 자기 확언 받기
+        /message - 15줄의 자기확언 받기
+        /affirmation - 마음챙김 자기확언 받기
         /help - 도움말 보기
         
-        매시 30분마다 자동으로 긍정적인 메시지가 전송됩니다! ✨
+        서버 시작 후 30분마다 자동으로 자기확언이 전송됩니다! ✨
         """
         await update.message.reply_text(welcome_message)
     
@@ -47,23 +47,30 @@ class MindfulBot:
         
         📋 명령어 목록:
         /start - 봇 시작하기
-        /message - 긍정적인 메시지 받기
-        /affirmation - 자기 확언 받기
+        /message - 15줄의 자기확언 받기
+        /affirmation - 마음챙김 자기확언 받기
         /help - 이 도움말 보기
         
         ⏰ 자동 메시지:
-        매시 30분마다 자동으로 긍정적인 메시지가 전송됩니다.
+        서버 시작 후 30분마다 자동으로 자기확언이 전송됩니다.
         
-        💡 팁:
-        이 봇을 그룹 채팅에 추가하면 모든 멤버가 함께 긍정적인 에너지를 나눌 수 있어요!
+        💡 특징:
+        - 심리학적 근거가 있는 깊이 있는 자기확언
+        - 현대인의 실제 고민을 다룬 공감대 형성
+        - 상투적이지 않은 진정성 있는 메시지
+        - 15줄의 체계적인 자기확언 리스트
+        
+        🌟 팁:
+        이 봇을 그룹 채팅에 추가하면 모든 멤버가 함께 마음챙김을 실천할 수 있어요!
         """
         await update.message.reply_text(help_message)
     
     async def send_message_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """수동으로 긍정적인 메시지 전송"""
         try:
+            await update.message.reply_text("💭 마음을 어루만지는 자기확언을 준비하고 있어요...")
             message = self.openai_service.generate_positive_message()
-            await update.message.reply_text(f"💖 {message}")
+            await update.message.reply_text(f"💖 **오늘의 자기확언**\n\n{message}")
         except Exception as e:
             logger.error(f"메시지 생성 중 오류 발생: {e}")
             await update.message.reply_text("죄송합니다. 메시지를 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
@@ -71,8 +78,9 @@ class MindfulBot:
     async def send_affirmation_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """자기 확언 메시지 전송"""
         try:
+            await update.message.reply_text("✨ 내면의 힘을 불러일으키는 자기확언을 준비하고 있어요...")
             affirmation = self.openai_service.generate_daily_affirmation()
-            await update.message.reply_text(f"✨ {affirmation}")
+            await update.message.reply_text(f"🌟 **마음챙김 자기확언**\n\n{affirmation}")
         except Exception as e:
             logger.error(f"자기 확언 생성 중 오류 발생: {e}")
             await update.message.reply_text("죄송합니다. 자기 확언을 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
@@ -86,7 +94,7 @@ class MindfulBot:
             if Config.GROUP_CHAT_ID:
                 await context.bot.send_message(
                     chat_id=Config.GROUP_CHAT_ID,
-                    text=f"💖 {message}"
+                    text=f"💖 **마음챙김 시간**\n\n{message}"
                 )
                 logger.info(f"그룹 채팅에 스케줄 메시지 전송: {Config.GROUP_CHAT_ID}")
             else:
@@ -105,12 +113,12 @@ class MindfulBot:
     
     def setup_scheduler(self):
         """스케줄러 설정"""
-        # 매시 30분마다 메시지 전송
-        schedule.every().hour.at(":30").do(
+        # 서버 실행 후 30분마다 메시지 전송
+        schedule.every(Config.MESSAGE_INTERVAL).minutes.do(
             lambda: asyncio.create_task(self.send_scheduled_message(None))
         )
         
-        logger.info("스케줄러가 설정되었습니다. 매시 30분마다 메시지가 전송됩니다.")
+        logger.info(f"스케줄러가 설정되었습니다. {Config.MESSAGE_INTERVAL}분마다 메시지가 전송됩니다.")
     
     async def run_scheduler(self):
         """스케줄러 실행"""
@@ -139,6 +147,10 @@ class MindfulBot:
             await self.application.initialize()
             await self.application.start()
             await self.application.updater.start_polling()
+            
+            # 서버 시작 후 즉시 첫 메시지 전송
+            await self.send_scheduled_message(None)
+            logger.info("서버 시작 후 첫 메시지가 전송되었습니다.")
             
             # 스케줄러 실행
             await self.run_scheduler()
