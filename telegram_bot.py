@@ -72,10 +72,19 @@ class MindfulBot:
     
     async def secret_affirmation_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """비밀 자기확언 명령어 (관리자용)"""
+        user_id = str(update.effective_user.id)
+        
+        # 허용된 사용자 ID 확인
+        if Config.ALLOWED_USER_IDS and user_id not in Config.ALLOWED_USER_IDS:
+            await update.message.reply_text("❌ 권한이 없습니다.")
+            logger.warning(f"권한 없는 사용자가 비밀 명령어 시도: {user_id}")
+            return
+        
         try:
             await update.message.reply_text("🔮 특별한 자기확언을 준비하고 있어요...")
             message = self.openai_service.generate_positive_message()
             await update.message.reply_text(f"✨ **특별한 자기확언**\n\n{message}")
+            logger.info(f"비밀 명령어 사용: {user_id}")
         except Exception as e:
             logger.error(f"비밀 메시지 생성 중 오류 발생: {e}")
             await update.message.reply_text("💖 오늘도 당신은 충분히 훌륭한 사람입니다!")

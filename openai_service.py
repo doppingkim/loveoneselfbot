@@ -1,6 +1,8 @@
 import openai
 from config import Config
 import random
+import time
+from datetime import datetime, timedelta
 
 class OpenAIService:
     """OpenAI API를 활용한 긍정적인 메시지 생성 서비스"""
@@ -13,6 +15,35 @@ class OpenAIService:
         else:
             self.client = None
             print("⚠️ OPENAI_API_KEY가 설정되지 않았습니다. 기본 메시지만 사용됩니다.")
+        
+        # API 호출 제한 (보안)
+        self.last_call_time = 0
+        self.min_call_interval = 5  # 최소 5초 간격
+        self.daily_call_count = 0
+        self.daily_limit = 100  # 하루 최대 100회
+        self.last_reset_date = datetime.now().date()
+    
+    def _check_rate_limit(self) -> bool:
+        """API 호출 제한 확인"""
+        current_time = time.time()
+        current_date = datetime.now().date()
+        
+        # 날짜가 바뀌면 카운트 리셋
+        if current_date != self.last_reset_date:
+            self.daily_call_count = 0
+            self.last_reset_date = current_date
+        
+        # 하루 호출 제한 확인
+        if self.daily_call_count >= self.daily_limit:
+            print(f"⚠️ 일일 API 호출 제한 초과: {self.daily_call_count}/{self.daily_limit}")
+            return False
+        
+        # 최소 간격 확인
+        if current_time - self.last_call_time < self.min_call_interval:
+            print(f"⚠️ API 호출 간격이 너무 짧음: {current_time - self.last_call_time:.1f}초")
+            return False
+        
+        return True
     
     def generate_positive_message(self) -> str:
         """10줄의 자기확언 리스트 생성"""
@@ -40,6 +71,10 @@ class OpenAIService:
         if not self.client:
             # OpenAI 클라이언트가 없으면 기본 메시지 반환
             return self._get_fallback_message()
+        
+        # API 호출 제한 확인
+        if not self._check_rate_limit():
+            return self._get_fallback_message()
             
         try:
             response = self.client.chat.completions.create(
@@ -53,6 +88,11 @@ class OpenAIService:
             )
             
             message = response.choices[0].message.content.strip()
+            
+            # 호출 성공 시 카운트 증가
+            self.daily_call_count += 1
+            self.last_call_time = time.time()
+            
             return message
             
         except Exception as e:

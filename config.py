@@ -19,6 +19,9 @@ class Config:
     # 메시지 전송 간격 (분 단위)
     MESSAGE_INTERVAL = int(os.getenv('MESSAGE_INTERVAL', 60))
     
+    # 허용된 사용자 ID 목록 (비밀 명령어 사용 가능)
+    ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS', '').split(',') if os.getenv('ALLOWED_USER_IDS') else []
+    
     @classmethod
     def debug_env_vars(cls):
         """환경 변수 디버깅용"""
