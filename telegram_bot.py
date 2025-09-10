@@ -32,8 +32,6 @@ class MindfulBot:
         
         사용 가능한 명령어:
         /start - 봇 시작
-        /message - 15줄의 자기확언 받기
-        /affirmation - 마음챙김 자기확언 받기
         /help - 도움말 보기
         
         서버 시작 후 30분마다 자동으로 자기확언이 전송됩니다! ✨
@@ -56,8 +54,6 @@ class MindfulBot:
         
         📋 명령어 목록:
         /start - 봇 시작하기
-        /message - 15줄의 자기확언 받기
-        /affirmation - 마음챙김 자기확언 받기
         /help - 이 도움말 보기
         
         ⏰ 자동 메시지:
@@ -74,25 +70,15 @@ class MindfulBot:
         """
         await update.message.reply_text(help_message)
     
-    async def send_message_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """수동으로 긍정적인 메시지 전송"""
+    async def secret_affirmation_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """비밀 자기확언 명령어 (관리자용)"""
         try:
-            await update.message.reply_text("💭 마음을 어루만지는 자기확언을 준비하고 있어요...")
+            await update.message.reply_text("🔮 특별한 자기확언을 준비하고 있어요...")
             message = self.openai_service.generate_positive_message()
-            await update.message.reply_text(f"💖 **오늘의 자기확언**\n\n{message}")
+            await update.message.reply_text(f"✨ **특별한 자기확언**\n\n{message}")
         except Exception as e:
-            logger.error(f"메시지 생성 중 오류 발생: {e}")
-            await update.message.reply_text("죄송합니다. 메시지를 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
-    
-    async def send_affirmation_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """자기 확언 메시지 전송"""
-        try:
-            await update.message.reply_text("✨ 내면의 힘을 불러일으키는 자기확언을 준비하고 있어요...")
-            affirmation = self.openai_service.generate_daily_affirmation()
-            await update.message.reply_text(f"🌟 **마음챙김 자기확언**\n\n{affirmation}")
-        except Exception as e:
-            logger.error(f"자기 확언 생성 중 오류 발생: {e}")
-            await update.message.reply_text("죄송합니다. 자기 확언을 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+            logger.error(f"비밀 메시지 생성 중 오류 발생: {e}")
+            await update.message.reply_text("💖 오늘도 당신은 충분히 훌륭한 사람입니다!")
     
     async def send_scheduled_message(self, context: ContextTypes.DEFAULT_TYPE):
         """스케줄된 메시지 전송"""
@@ -114,11 +100,11 @@ class MindfulBot:
     
     def setup_handlers(self):
         """명령어 핸들러 설정"""
-        # 명령어 핸들러 등록
+        # 명령어 핸들러 등록 (사용자용 명령어 제거)
         self.application.add_handler(CommandHandler("start", self.start_command))
         self.application.add_handler(CommandHandler("help", self.help_command))
-        self.application.add_handler(CommandHandler("message", self.send_message_command))
-        self.application.add_handler(CommandHandler("affirmation", self.send_affirmation_command))
+        # 비밀 명령어만 남김
+        self.application.add_handler(CommandHandler("gogosing", self.secret_affirmation_command))
     
     def setup_scheduler(self):
         """스케줄러 설정"""
