@@ -42,7 +42,7 @@ pip install -r requirements.txt
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 OPENAI_API_KEY=your_openai_api_key_here
 GROUP_CHAT_ID=your_group_chat_id_here
-MESSAGE_INTERVAL=30
+MESSAGE_INTERVAL=60
 ```
 
 ### 4. 봇 실행
